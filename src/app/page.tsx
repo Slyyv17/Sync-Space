@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ListFilter, CalendarDays, MoreVertical } from "lucide-react";
+import { ListFilter, CalendarDays, MoreVertical, Grip } from "lucide-react";
 
 export default function Home() {
   const [containers, setContainers] = useState<{
@@ -121,7 +121,7 @@ export default function Home() {
           <div className="grid grid-cols-4 flex-wrap gap-4">
             {containers.map((container) => (
               <article key={container.id} className="w-full flex flex-col gap-4">
-                <div className="w-full h-auto bg-mainClr border border-mainClr shadow-shadow shadow-sm rounded flex flex-col p-4">
+                <div className="w-full h-fit bg-mainClr border border-mainClr shadow-shadow shadow-sm rounded flex flex-col p-4">
                   {container.editing ? (
                     <div className="w-full flex flex-col items-center">
                       <input
@@ -155,25 +155,31 @@ export default function Home() {
                             className="w-72 h-fit bg-mainClr border border-mainClr shadow-shadow shadow-sm rounded flex justify-between items-center flex-col p-2"
                           >
                             {card.editing ? (
-                              <div className="bg-shadow w-full h-fit p-3 border-none gap-2 rounded-sm">
-                                <input
-                                  type="text"
-                                  className="w-full h-fit p-3 mb-1"
-                                  placeholder="Enter task"
-                                  value={card.title}
-                                  onChange={(e) =>
-                                    updateCardTitle(container.id, card.id, e.target.value)
-                                  }
-                                />
-                                <button
-                                  onClick={() => saveCardTitle(container.id, card.id)}
-                                  className="bg-btnClr text-white px-4 py-2 rounded"
-                                >
-                                  Save
-                                </button>
+                              <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                                <div className="bg-shadow w-72 h-fit p-3 border-none gap-2 rounded-sm">
+                                  <input
+                                    type="text"
+                                    className="w-full h-fit p-3 mb-1"
+                                    placeholder="Enter task"
+                                    value={card.title}
+                                    onChange={(e) => updateCardTitle(container.id, card.id, e.target.value)}
+                                  />
+                                  <button
+                                    onClick={() => saveCardTitle(container.id, card.id)}
+                                    className="bg-btnClr text-white px-4 py-2 rounded"
+                                  >
+                                    Save
+                                  </button>
+                                </div>
                               </div>
+
                             ) : (
-                              <span className="text-left w-full">{card.title}</span>
+                                <div className="w-full flex justify-between items-center">
+                                  <span className="text-left w-full">{card.title}</span>
+                                  <button>
+                                    <Grip size={20} />
+                                  </button>
+                                </div>
                             )}
                           </div>
                         ))}
