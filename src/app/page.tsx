@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { ListFilter, CalendarDays, MoreVertical, Grip } from "lucide-react";
+import Metrics from "@/components/metrics";
+import Graph from "@/components/graph";
 
 export default function Home() {
   const [containers, setContainers] = useState<{
@@ -11,7 +13,6 @@ export default function Home() {
     cards: { id: number; title: string; editing: boolean }[];
   }[]>([]);
 
-  // Function to add a new container
   const addContainer = () => {
     setContainers([
       ...containers,
@@ -19,7 +20,6 @@ export default function Home() {
     ]);
   };
 
-  // Function to update the title of a specific container
   const updateTitle = (id: number, newTitle: string) => {
     setContainers((prevContainers) =>
       prevContainers.map((container) =>
@@ -28,7 +28,6 @@ export default function Home() {
     );
   };
 
-  // Function to save the title and stop editing mode
   const saveTitle = (id: number) => {
     setContainers((prevContainers) =>
       prevContainers.map((container) => {
@@ -44,7 +43,6 @@ export default function Home() {
     );
   };
 
-  // Function to add a card to a specific container
   const addCard = (containerId: number) => {
     setContainers((prevContainers) =>
       prevContainers.map((container) =>
@@ -61,7 +59,6 @@ export default function Home() {
     );
   };
 
-  // Function to update a card's title
   const updateCardTitle = (containerId: number, cardId: number, newTitle: string) => {
     setContainers((prevContainers) =>
       prevContainers.map((container) =>
@@ -77,7 +74,6 @@ export default function Home() {
     );
   };
 
-  // Function to save a card's title
   const saveCardTitle = (containerId: number, cardId: number) => {
     setContainers((prevContainers) =>
       prevContainers.map((container) =>
@@ -94,9 +90,22 @@ export default function Home() {
   };
 
   return (
-    <div className="flex items-center justify-center h-screen bg-bgClr p-1 font-pryClr">
+    <div className="flex items-center justify-center min-h-[100dvh] bg-bgClr p-1 font-pryClr">
       <main className="w-full h-fit border-black border flex flex-col items-center justify-between gap-2">
         {/* First section */}
+        <section className="w-full flex justify-between items-center h-fit p-4 border border-red-500 flex-col gap-2">
+          <div className="w-full h-fit border border-black p-2 flex justify-center items-center">
+            <h1 className="text-2xl font-semibold">Metrics</h1>
+          </div>
+
+          {/* Charts */}
+          <div className="grid grid-cols-2 gap-4 w-full">
+            <Metrics containers={containers} />
+            <Graph containers={containers} />
+          </div>
+        </section>
+
+        {/* Main section */}
         <section className="w-full flex justify-between items-center h-fit p-2 border border-red-500">
           <div className="w-20 py-4 flex justify-between items-center">
             <button className="py-2 px-2 bg-mainClr shadow-sm shadow-shadow rounded-full">
@@ -147,7 +156,6 @@ export default function Home() {
                         </button>
                       </div>
 
-                      {/* Render the cards */}
                       <div className="flex flex-wrap gap-4 mt-4">
                         {container.cards.map((card) => (
                           <div
@@ -172,14 +180,13 @@ export default function Home() {
                                   </button>
                                 </div>
                               </div>
-
                             ) : (
-                                <div className="w-full flex justify-between items-center">
-                                  <span className="text-left w-full">{card.title}</span>
-                                  <button>
-                                    <Grip size={20} />
-                                  </button>
-                                </div>
+                              <div className="w-full flex justify-between items-center">
+                                <span className="text-left w-full">{card.title}</span>
+                                <button>
+                                  <Grip size={20} />
+                                </button>
+                              </div>
                             )}
                           </div>
                         ))}
