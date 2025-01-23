@@ -94,8 +94,9 @@ export default function Home() {
       <main className="w-full h-fit border-black border flex flex-col items-center justify-between gap-2">
         {/* First section */}
         <section className="w-full flex justify-between items-center h-fit p-4 border border-red-500 flex-col gap-2">
-          <div className="w-full h-fit border border-black p-2 flex justify-center items-center">
+          <div className="w-full h-fit border border-black p-2 flex justify-center items-center flex-col">
             <h1 className="text-2xl font-semibold">Metrics</h1>
+            <p className="text-center text-lg font-bold">Task Distribution</p>
           </div>
 
           {/* Charts */}

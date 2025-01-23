@@ -85,7 +85,6 @@ export default function Graph({ containers }: GraphProps) {
 
     return (
         <div>
-            <h2> Task Distribution</h2>
             {containers.length > 0 ? (
                 <Bar data={graphData} />
             ) : (
