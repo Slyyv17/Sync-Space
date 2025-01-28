@@ -1,17 +1,179 @@
 "use client";
 
 import { useState } from "react";
+import { DndProvider, useDrag, useDrop } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 import { ListFilter, CalendarDays, MoreVertical, Grip } from "lucide-react";
 import Metrics from "@/components/metrics";
 import Graph from "@/components/graph";
 
+type CardType = {
+  id: number;
+  title: string;
+  editing: boolean;
+};
+
+type ContainerType = {
+  id: number;
+  title: string;
+  editing: boolean;
+  cards: CardType[];
+};
+
+const Card = ({ card, containerId, updateCardTitle, saveCardTitle }: {
+  card: CardType;
+  containerId: number;
+  updateCardTitle: (containerId: number, cardId: number, newTitle: string) => void;
+  saveCardTitle: (containerId: number, cardId: number) => void;
+}) => {
+  const [{ isDragging }, drag] = useDrag(() => ({
+    type: 'card',
+    item: { id: card.id, containerId },
+    collect: (monitor) => ({
+      isDragging: !!monitor.isDragging(),
+    }),
+  }));
+
+  return (
+    <div
+      ref={drag as unknown as React.Ref<HTMLDivElement>}
+      className={`w-72 h-fit bg-mainClr border border-mainClr shadow-shadow shadow-sm rounded flex justify-between items-center flex-col p-2 ${
+        isDragging ? 'opacity-50' : 'opacity-100'
+      }`}
+    >
+      {card.editing ? (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-shadow w-72 h-fit p-3 border-none gap-2 rounded-sm">
+            <input
+              type="text"
+              className="w-full h-fit p-3 mb-1"
+              placeholder="Enter task"
+              value={card.title}
+              onChange={(e) => updateCardTitle(containerId, card.id, e.target.value)}
+            />
+            <button
+              onClick={() => saveCardTitle(containerId, card.id)}
+              className="bg-btnClr text-white px-4 py-2 rounded"
+            >
+              Save
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div className="w-full flex justify-between items-center">
+          <span className="text-left w-full">{card.title}</span>
+          <button>
+            <Grip size={20} />
+          </button>
+        </div>
+      )}
+    </div>
+  );
+};
+
+const Container = ({ container, updateTitle, saveTitle, addCard, updateCardTitle, saveCardTitle, moveCard }: {
+  container: ContainerType;
+  updateTitle: (id: number, newTitle: string) => void;
+  saveTitle: (id: number) => void;
+  addCard: (containerId: number) => void;
+  updateCardTitle: (containerId: number, cardId: number, newTitle: string) => void;
+  saveCardTitle: (containerId: number, cardId: number) => void;
+  moveCard: (fromContainerId: number, toContainerId: number, cardId: number) => void;
+}) => {
+  const [{ isOver }, drop] = useDrop(() => ({
+    accept: 'card',
+    drop: (item: { id: number; containerId: number }) => {
+      if (item.containerId !== container.id) {
+        moveCard(item.containerId, container.id, item.id);
+      }
+    },
+    collect: (monitor) => ({
+      isOver: !!monitor.isOver(),
+    }),
+  }));
+
+  return (
+    <div
+      ref={drop as unknown as React.Ref<HTMLDivElement>}
+      className={`w-full h-fit bg-mainClr border border-mainClr shadow-shadow shadow-sm rounded flex flex-col p-4 ${
+        isOver ? 'bg-opacity-50' : ''
+      }`}
+    >
+      {container.editing ? (
+        <div className="w-full flex flex-col items-center">
+          <input
+            type="text"
+            value={container.title}
+            onChange={(e) => updateTitle(container.id, e.target.value)}
+            placeholder="Enter title"
+            className="border border-shadow px-2 py-1 rounded w-full mb-2 outline-btnClr"
+          />
+          <button
+            onClick={() => saveTitle(container.id)}
+            className="bg-btnClr text-white px-4 py-2 rounded"
+          >
+            Add Title
+          </button>
+        </div>
+      ) : (
+        <div>
+          <div className="w-full flex justify-between items-center">
+            <span className="text-lg font-medium">{container.title}</span>
+            <button>
+              <MoreVertical size={20} />
+            </button>
+          </div>
+
+          <div className="flex flex-wrap gap-4 mt-4">
+            {container.cards.map((card) => (
+              <Card
+                key={card.id}
+                card={card}
+                containerId={container.id}
+                updateCardTitle={updateCardTitle}
+                saveCardTitle={saveCardTitle}
+              />
+            ))}
+          </div>
+
+          <div className="flex justify-center items-center w-full px-4 mt-2">
+            <button
+              onClick={() => addCard(container.id)}
+              className="border border-shadow shadow-sm shadow-shadow px-4 py-2 rounded-lg mb-1 w-full max-w-xs"
+            >
+              Add Card
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
 export default function Home() {
-  const [containers, setContainers] = useState<{
-    id: number;
-    title: string;
-    editing: boolean;
-    cards: { id: number; title: string; editing: boolean }[];
-  }[]>([]);
+  const [containers, setContainers] = useState<ContainerType[]>([]);
+
+  const moveCard = (fromContainerId: number, toContainerId: number, cardId: number) => {
+    setContainers(prev => prev.map(container => {
+      if (container.id === fromContainerId) {
+        return {
+          ...container,
+          cards: container.cards.filter(c => c.id !== cardId),
+        };
+      }
+      if (container.id === toContainerId && !container.cards.some(c => c.id === cardId)) {
+        const fromContainer = prev.find(c => c.id === fromContainerId);
+        const card = fromContainer?.cards.find(c => c.id === cardId);
+        if (card) {
+          return {
+            ...container,
+            cards: [...container.cards, card],
+          };
+        }
+      }
+      return container;
+    }));
+  };
 
   const addContainer = () => {
     setContainers([
@@ -93,10 +255,10 @@ export default function Home() {
     <div className="flex items-center justify-center min-h-[100dvh] bg-bgClr p-1 font-pryClr">
       <main className="w-full h-fit border-black border flex flex-col items-center justify-between gap-2">
         {/* First section */}
-        <section className="w-full flex justify-between items-center h-fit p-4 border border-red-500 flex-col gap-2">
+        <section className="w-full flex justify-between items-center h-fit p-4 flex-col gap-2">
           <div className="w-full h-fit border border-black p-2 flex justify-center items-center flex-col">
             <h1 className="text-2xl font-semibold">Metrics</h1>
-            <p className="text-center text-lg font-bold">Task Distribution</p>
+            <p className="text-center text-lg font-medium text-greyClr">Task Distribution</p>
           </div>
 
           {/* Charts */}
@@ -127,87 +289,24 @@ export default function Home() {
         </section>
 
         {/* Second section */}
-        <section className="w-full flex justify-between items-center h-fit p-4 border border-red-500">
-          <div className="grid grid-cols-4 flex-wrap gap-4">
-            {containers.map((container) => (
-              <article key={container.id} className="w-full flex flex-col gap-4">
-                <div className="w-full h-fit bg-mainClr border border-mainClr shadow-shadow shadow-sm rounded flex flex-col p-4">
-                  {container.editing ? (
-                    <div className="w-full flex flex-col items-center">
-                      <input
-                        type="text"
-                        value={container.title}
-                        onChange={(e) => updateTitle(container.id, e.target.value)}
-                        placeholder="Enter title"
-                        className="border border-shadow px-2 py-1 rounded w-full mb-2 outline-btnClr"
-                      />
-                      <button
-                        onClick={() => saveTitle(container.id)}
-                        className="bg-btnClr text-white px-4 py-2 rounded"
-                      >
-                        Add Title
-                      </button>
-                    </div>
-                  ) : (
-                    <div>
-                      <div className="w-full flex justify-between items-center">
-                        <span className="text-lg font-medium">{container.title}</span>
-                        <button>
-                          <MoreVertical size={20} />
-                        </button>
-                      </div>
-
-                      <div className="flex flex-wrap gap-4 mt-4">
-                        {container.cards.map((card) => (
-                          <div
-                            key={card.id}
-                            className="w-72 h-fit bg-mainClr border border-mainClr shadow-shadow shadow-sm rounded flex justify-between items-center flex-col p-2"
-                          >
-                            {card.editing ? (
-                              <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                                <div className="bg-shadow w-72 h-fit p-3 border-none gap-2 rounded-sm">
-                                  <input
-                                    type="text"
-                                    className="w-full h-fit p-3 mb-1"
-                                    placeholder="Enter task"
-                                    value={card.title}
-                                    onChange={(e) => updateCardTitle(container.id, card.id, e.target.value)}
-                                  />
-                                  <button
-                                    onClick={() => saveCardTitle(container.id, card.id)}
-                                    className="bg-btnClr text-white px-4 py-2 rounded"
-                                  >
-                                    Save
-                                  </button>
-                                </div>
-                              </div>
-                            ) : (
-                              <div className="w-full flex justify-between items-center">
-                                <span className="text-left w-full">{card.title}</span>
-                                <button>
-                                  <Grip size={20} />
-                                </button>
-                              </div>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-
-                      <div className="flex justify-center items-center w-full px-4 mt-2">
-                        <button
-                          onClick={() => addCard(container.id)}
-                          className="border border-shadow shadow-sm shadow-shadow px-4 py-2 rounded-lg mb-1 w-full max-w-xs"
-                        >
-                          Add Card
-                        </button>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </article>
-            ))}
-          </div>
-        </section>
+        <DndProvider backend={HTML5Backend}>
+          <section className="w-full flex justify-between items-center h-fit p-4 border border-red-500">
+            <div className="grid grid-cols-4 flex-wrap gap-4">
+              {containers.map((container) => (
+                <Container
+                  key={container.id}
+                  container={container}
+                  updateTitle={updateTitle}
+                  saveTitle={saveTitle}
+                  addCard={addCard}
+                  updateCardTitle={updateCardTitle}
+                  saveCardTitle={saveCardTitle}
+                  moveCard={moveCard}
+                />
+              ))}
+            </div>
+          </section>
+        </DndProvider>
       </main>
     </div>
   );

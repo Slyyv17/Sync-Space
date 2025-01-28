@@ -17,6 +17,7 @@ export default {
         btnClr: "#587638",
         indicateClr: "#E8F09B",
         shadow: "#EEEEEE",
+        greyClr: "#333333",
       },
       fontFamily: {
         pryClr: ["Satoshi", "sans-serif"],
