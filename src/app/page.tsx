@@ -53,7 +53,7 @@ const Card = ({ card, containerId, updateCardTitle, saveCardTitle }: {
             />
             <button
               onClick={() => saveCardTitle(containerId, card.id)}
-              className="bg-btnClr text-white px-4 py-2 rounded"
+              className="bg-foreground text-white px-4 py-2 rounded"
             >
               Save
             </button>
@@ -92,10 +92,17 @@ const Container = ({ container, updateTitle, saveTitle, addCard, updateCardTitle
     }),
   }));
 
+  const [showOptions, setShowOptions] = useState(false);
+
+  const handleOptions = () => {
+    setShowOptions((prev) => !prev);
+  };
+
+
   return (
     <div
       ref={drop as unknown as React.Ref<HTMLDivElement>}
-      className={`w-full h-fit bg-mainClr border border-mainClr shadow-shadow shadow-sm rounded flex flex-col p-4 ${
+      className={`w-full h-fit bg-background border border-mainClr shadow-shadow shadow-sm rounded flex flex-col p-4 ${
         isOver ? 'bg-opacity-50' : ''
       }`}
     >
@@ -106,11 +113,11 @@ const Container = ({ container, updateTitle, saveTitle, addCard, updateCardTitle
             value={container.title}
             onChange={(e) => updateTitle(container.id, e.target.value)}
             placeholder="Enter title"
-            className="border border-shadow px-2 py-1 rounded w-full mb-2 outline-btnClr"
+            className="border border-shadow px-2 py-1 rounded w-full mb-2 outline-foreground"
           />
           <button
             onClick={() => saveTitle(container.id)}
-            className="bg-btnClr text-white px-4 py-2 rounded"
+            className="bg-foreground text-white px-4 py-2 rounded"
           >
             Add Title
           </button>
@@ -119,9 +126,17 @@ const Container = ({ container, updateTitle, saveTitle, addCard, updateCardTitle
         <div>
           <div className="w-full flex justify-between items-center">
             <span className="text-lg font-medium">{container.title}</span>
-            <button>
+            <button onClick={handleOptions}>
               <MoreVertical size={20} />
             </button>
+
+            {showOptions && (
+              <div className="absolute w-fit h-fit flex flex-col gap-2 items-start justify-between shadow-shadow bg-mainClr text-foreground text-lg font-medium left-48 shadow-lg p-2">
+                  <button> Edit </button>
+                  <div className="border-b-2 w-full"></div>
+                <button> Delete </button>
+              </div>
+            )}    
           </div>
 
           <div className="flex flex-wrap gap-4 mt-4">
@@ -139,12 +154,14 @@ const Container = ({ container, updateTitle, saveTitle, addCard, updateCardTitle
           <div className="flex justify-center items-center w-full px-4 mt-2">
             <button
               onClick={() => addCard(container.id)}
-              className="border border-shadow shadow-sm shadow-shadow px-4 py-2 rounded-lg mb-1 w-full max-w-xs"
+              className="border border-shadow shadow-sm shadow-shadow text-background px-4 py-2 rounded-lg mb-1 w-full max-w-xs bg-foreground"
             >
               Add Card
             </button>
           </div>
         </div>
+        
+        
       )}
     </div>
   );
@@ -269,8 +286,8 @@ export default function Home() {
         </section>
 
         {/* Main section */}
-        <section className="w-full flex justify-between items-center h-fit p-2 border border-red-500">
-          <div className="w-20 py-4 flex justify-between items-center">
+        <section className="w-full flex justify-between items-center h-fit p-2">
+          <div className="w-full flex justify-start items-center gap-2">
             <button className="py-2 px-2 bg-mainClr shadow-sm shadow-shadow rounded-full">
               <ListFilter size={20} />
             </button>
@@ -278,19 +295,19 @@ export default function Home() {
               <CalendarDays size={20} />
             </button>
           </div>
-          <div>
+
             <button
               onClick={addContainer}
-              className="bg-btnClr text-mainClr border-none rounded-full px-5 py-3 text-center shadow-sm shadow-btnClr"
+              className="bg-foreground text-background px-4 py-2 rounded-lg shadow-md flex-shrink-0 whitespace-nowrap"
             >
               Add Container
             </button>
-          </div>
+
         </section>
 
         {/* Second section */}
         <DndProvider backend={HTML5Backend}>
-          <section className="w-full flex justify-between items-center h-fit p-4 border border-red-500">
+          <section className="w-full flex justify-between items-center h-fit p-4 border">
             <div className="grid grid-cols-4 flex-wrap gap-4">
               {containers.map((container) => (
                 <Container
