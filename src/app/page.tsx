@@ -4,14 +4,13 @@ import { useState } from "react";
 import { DndProvider, useDrag, useDrop } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import {
-  ListFilter,
-  CalendarDays,
   MoreVertical,
   Grip, Clock,
   PencilIcon, Users,
   Trash } from "lucide-react";
 import Metrics from "@/components/metrics";
 import Graph from "@/components/graph";
+import Navigation from "@/components/navigation";
 
 type CardType = {
   id: number;
@@ -333,13 +332,8 @@ export default function Home() {
 
         {/* Main section */}
         <section className="w-full flex justify-between items-center h-fit p-2">
-          <div className="w-full flex justify-start items-center gap-2">
-            <button className="py-2 px-2 bg-mainClr shadow-sm shadow-shadow rounded-full">
-              <ListFilter size={20} />
-            </button>
-            <button className="py-2 px-2 bg-mainClr shadow-sm shadow-shadow rounded-full">
-              <CalendarDays size={20} />
-            </button>
+          <div className="w-full h-fit flex justify-between items-center gap-2">
+            <Navigation />
           </div>
 
             <button
