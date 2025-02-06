@@ -27,7 +27,7 @@ export default function Metrics({ containers }: MetricsProps) {
         backgroundColor: [
           "rgba(255, 99, 132, 0.6)",
           "rgba(54, 162, 235, 0.6)",
-          "rgba(255, 206, 86, 0.6)",
+          "rgba(50, 205, 50, 0.6)",    // Lime Green
           "rgba(75, 192, 192, 0.6)",
           "rgba(153, 102, 255, 0.6)",
           "rgba(255, 159, 64, 0.6)",
@@ -39,7 +39,7 @@ export default function Metrics({ containers }: MetricsProps) {
           "rgba(138, 43, 226, 0.6)",   // Blue Violet
           "rgba(255, 105, 180, 0.6)",  // Hot Pink
           "rgba(255, 140, 0, 0.6)",    // Dark Orange
-          "rgba(50, 205, 50, 0.6)",    // Lime Green
+          "rgba(255, 206, 86, 0.6)",
           "rgba(0, 191, 255, 0.6)",    // Deep Sky Blue
           "rgba(255, 99, 71, 0.6)",    // Tomato
           "rgba(255, 228, 181, 0.6)",  // Moccasin
@@ -47,7 +47,7 @@ export default function Metrics({ containers }: MetricsProps) {
         borderColor: [
           "rgba(255, 99, 132, 1)",
           "rgba(54, 162, 235, 1)",
-          "rgba(255, 206, 86, 1)",
+          "rgba(50, 205, 50, 0.6)",    // Lime Green
           "rgba(75, 192, 192, 1)",
           "rgba(153, 102, 255, 1)",
           "rgba(255, 159, 64, 1)",
@@ -59,7 +59,7 @@ export default function Metrics({ containers }: MetricsProps) {
           "rgba(138, 43, 226, 0.6)",   // Blue Violet
           "rgba(255, 105, 180, 0.6)",  // Hot Pink
           "rgba(255, 140, 0, 0.6)",    // Dark Orange
-          "rgba(50, 205, 50, 0.6)",    // Lime Green
+          "rgba(255, 206, 86, 1)",
           "rgba(0, 191, 255, 0.6)",    // Deep Sky Blue
           "rgba(255, 99, 71, 0.6)",    // Tomato
           "rgba(255, 228, 181, 0.6)",  // Moccasin

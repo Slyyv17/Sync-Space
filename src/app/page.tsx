@@ -3,7 +3,13 @@
 import { useState } from "react";
 import { DndProvider, useDrag, useDrop } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-import { ListFilter, CalendarDays, MoreVertical, Grip } from "lucide-react";
+import {
+  ListFilter,
+  CalendarDays,
+  MoreVertical,
+  Grip, Clock,
+  PencilIcon, Users,
+  Trash } from "lucide-react";
 import Metrics from "@/components/metrics";
 import Graph from "@/components/graph";
 
@@ -43,17 +49,17 @@ const Card = ({ card, containerId, updateCardTitle, saveCardTitle }: {
     >
       {card.editing ? (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-shadow w-72 h-fit p-3 border-none gap-2 rounded-sm">
+          <div className="bg-shadow w-72 h-fit p-3 border-none gap-2 rounded-sm flex justify-between items-center">
             <input
               type="text"
-              className="w-full h-fit p-3 mb-1"
+              className="w-full h-fit p-3 border border-greyClr outline-greyClr rounded"
               placeholder="Enter task"
               value={card.title}
               onChange={(e) => updateCardTitle(containerId, card.id, e.target.value)}
             />
             <button
               onClick={() => saveCardTitle(containerId, card.id)}
-              className="bg-foreground text-white px-4 py-2 rounded"
+              className="bg-greyClr text-white px-4 py-2 rounded"
             >
               Save
             </button>
@@ -71,7 +77,16 @@ const Card = ({ card, containerId, updateCardTitle, saveCardTitle }: {
   );
 };
 
-const Container = ({ container, updateTitle, saveTitle, addCard, updateCardTitle, saveCardTitle, moveCard }: {
+const Container = ({
+  container,
+  updateTitle,
+  saveTitle,
+  addCard,
+  updateCardTitle,
+  saveCardTitle,
+  moveCard,
+  setContainers,
+}: {
   container: ContainerType;
   updateTitle: (id: number, newTitle: string) => void;
   saveTitle: (id: number) => void;
@@ -79,6 +94,7 @@ const Container = ({ container, updateTitle, saveTitle, addCard, updateCardTitle
   updateCardTitle: (containerId: number, cardId: number, newTitle: string) => void;
   saveCardTitle: (containerId: number, cardId: number) => void;
   moveCard: (fromContainerId: number, toContainerId: number, cardId: number) => void;
+  setContainers: React.Dispatch<React.SetStateAction<ContainerType[]>>;
 }) => {
   const [{ isOver }, drop] = useDrop(() => ({
     accept: 'card',
@@ -92,17 +108,24 @@ const Container = ({ container, updateTitle, saveTitle, addCard, updateCardTitle
     }),
   }));
 
-  const [showOptions, setShowOptions] = useState(false);
+  // Change showOptions to track the active container ID
+  const [showOptions, setShowOptions] = useState<number | null>(null);
 
-  const handleOptions = () => {
-    setShowOptions((prev) => !prev);
+  const handleOptions = (id: number) => {
+    // If clicking the same container, toggle the options; otherwise, show the options for the clicked container
+    setShowOptions((prev) => (prev === id ? null : id));
   };
 
+  const handleDeleteContainer = (containerId: number) => {
+    setContainers((prevContainers) =>
+      prevContainers.filter((container) => container.id !== containerId)
+    );
+  };
 
   return (
     <div
       ref={drop as unknown as React.Ref<HTMLDivElement>}
-      className={`w-full h-fit bg-background border border-mainClr shadow-shadow shadow-sm rounded flex flex-col p-4 ${
+      className={`w-full h-fit bg-background border border-mainClr shadow-shadow shadow-sm rounded flex flex-col p-4 relative ${
         isOver ? 'bg-opacity-50' : ''
       }`}
     >
@@ -113,11 +136,11 @@ const Container = ({ container, updateTitle, saveTitle, addCard, updateCardTitle
             value={container.title}
             onChange={(e) => updateTitle(container.id, e.target.value)}
             placeholder="Enter title"
-            className="border border-shadow px-2 py-1 rounded w-full mb-2 outline-foreground"
+            className="border border-greyClr px-2 py-1 rounded w-full mb-2 outline-greyClr"
           />
           <button
             onClick={() => saveTitle(container.id)}
-            className="bg-foreground text-white px-4 py-2 rounded"
+            className="bg-greyClr text-white px-4 py-2 rounded"
           >
             Add Title
           </button>
@@ -126,17 +149,41 @@ const Container = ({ container, updateTitle, saveTitle, addCard, updateCardTitle
         <div>
           <div className="w-full flex justify-between items-center">
             <span className="text-lg font-medium">{container.title}</span>
-            <button onClick={handleOptions}>
+            <button onClick={() => handleOptions(container.id)}>
               <MoreVertical size={20} />
             </button>
 
-            {showOptions && (
-              <div className="absolute w-fit h-fit flex flex-col gap-2 items-start justify-between shadow-shadow bg-mainClr text-foreground text-lg font-medium left-48 shadow-lg p-2">
-                  <button> Edit </button>
-                  <div className="border-b-2 w-full"></div>
-                <button> Delete </button>
-              </div>
-            )}    
+            {showOptions === container.id && (
+              <ul className="absolute top-8 right-0 w-52 h-fit bg-white text-greyClr text-lg font-medium shadow-lg rounded-md p-2">
+                <li className="flex justify-start items-center gap-4 p-1 hover:bg-gray-200 w-full">
+                  <button className="flex justify-start items-center gap-4 w-full">
+                    <PencilIcon size={16} />
+                    Edit Card
+                  </button>
+                </li>
+
+                <li className="flex justify-start items-center gap-4 p-1 hover:bg-gray-200 w-full">
+                  <button className="flex justify-start items-center gap-4 w-full">
+                    <Clock size={16} />
+                    Schedule
+                  </button>
+                </li>
+
+                <li className="flex justify-start items-center gap-4 p-1 hover:bg-gray-200 w-full">
+                  <button className="flex justify-start items-center gap-4 w-full">
+                    <Users size={16} />
+                    Add Collaborator
+                  </button>
+                </li>
+
+                <li className="flex justify-start items-center gap-4 p-1 hover:bg-gray-200 w-full">
+                  <button onClick={() => handleDeleteContainer(container.id)} className="flex justify-start items-center gap-4 w-full">
+                    <Trash size={16} />
+                    Delete
+                  </button>
+                </li>
+              </ul>
+            )}
           </div>
 
           <div className="flex flex-wrap gap-4 mt-4">
@@ -154,18 +201,17 @@ const Container = ({ container, updateTitle, saveTitle, addCard, updateCardTitle
           <div className="flex justify-center items-center w-full px-4 mt-2">
             <button
               onClick={() => addCard(container.id)}
-              className="border border-shadow shadow-sm shadow-shadow text-background px-4 py-2 rounded-lg mb-1 w-full max-w-xs bg-foreground"
+              className="border border-shadow shadow-sm shadow-shadow text-background px-4 py-2 rounded-lg mb-1 w-full max-w-xs bg-greyClr"
             >
               Add Card
             </button>
           </div>
         </div>
-        
-        
       )}
     </div>
   );
 };
+
 
 export default function Home() {
   const [containers, setContainers] = useState<ContainerType[]>([]);
@@ -298,7 +344,7 @@ export default function Home() {
 
             <button
               onClick={addContainer}
-              className="bg-foreground text-background px-4 py-2 rounded-lg shadow-md flex-shrink-0 whitespace-nowrap"
+              className="bg-greyClr text-background px-4 py-2 rounded-lg shadow-md flex-shrink-0 whitespace-nowrap"
             >
               Add Container
             </button>
@@ -319,6 +365,7 @@ export default function Home() {
                   updateCardTitle={updateCardTitle}
                   saveCardTitle={saveCardTitle}
                   moveCard={moveCard}
+                  setContainers={setContainers} // Delete part, i am passing the setContainer to the Container
                 />
               ))}
             </div>
