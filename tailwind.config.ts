@@ -18,6 +18,7 @@ export default {
         indicateClr: "#E8F09B",
         shadow: "#EEEEEE",
         greyClr: "#333333",
+        lightGrey: "#F7F7F7",
       },
       fontFamily: {
         pryClr: ["Satoshi", "sans-serif"],

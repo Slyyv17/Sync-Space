@@ -85,7 +85,7 @@ export default function Graph({ containers }: GraphProps) {
     };
 
     return (
-        <div>
+        <div className='h-fit shadow-lg bg-background flex justify-center items-center'>
             {containers.length > 0 ? (
                 <Bar data={graphData} />
             ) : (

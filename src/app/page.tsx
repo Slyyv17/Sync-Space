@@ -11,6 +11,7 @@ import {
 import Metrics from "@/components/metrics";
 import Graph from "@/components/graph";
 import Navigation from "@/components/navigation";
+import Image from "next/image";
 
 type CardType = {
   id: number;
@@ -314,13 +315,18 @@ export default function Home() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-[100dvh] bg-bgClr p-1 font-pryClr">
+    <div className="flex items-start justify-center min-h-[100dvh] bg-bgClr p-1 font-pryClr bg-lightGrey">
       <main className="w-full h-fit border-black border flex flex-col items-center justify-between gap-2">
         {/* First section */}
-        <section className="w-full flex justify-between items-center h-fit p-4 flex-col gap-2">
-          <div className="w-full h-fit border border-black p-2 flex justify-center items-center flex-col">
-            <h1 className="text-2xl font-semibold">Metrics</h1>
-            <p className="text-center text-lg font-medium text-greyClr">Task Distribution</p>
+        <section className="w-full flex justify-between items-center h-fit p-2 flex-col gap-2">
+          <div className="w-full h-fit p-2 flex justify-start items-center">
+            <Image
+              src="/sync-space logo.png"
+              alt="SyncSpace Logo"
+              height={50}
+              width={50}
+            >
+            </Image>
           </div>
 
           {/* Charts */}
@@ -348,7 +354,7 @@ export default function Home() {
         {/* Second section */}
         <DndProvider backend={HTML5Backend}>
           <section className="w-full flex justify-between items-center h-fit p-4 border">
-            <div className="grid grid-cols-4 flex-wrap gap-4">
+            <div className="grid grid-cols-6 flex-wrap gap-4">
               {containers.map((container) => (
                 <Container
                   key={container.id}

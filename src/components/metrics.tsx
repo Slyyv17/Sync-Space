@@ -70,7 +70,7 @@ export default function Metrics({ containers }: MetricsProps) {
   };
 
   return (
-    <div className="w-80 h-fit">
+    <div className="w-80 h-fit shadow-lg bg-background">
       {containers.length > 0 ? (
         <Doughnut data={chartData} />
       ) : (
