@@ -1,5 +1,4 @@
 import Image from "next/image";
-import ProfilePic from "@/app/accounts/profile/page"
 
 export default function Navigation() {
     return (
@@ -11,9 +10,6 @@ export default function Navigation() {
                 width={50}
             >
             </Image>
-
-           <ProfilePic />
-            
         </div>
     )
 }
