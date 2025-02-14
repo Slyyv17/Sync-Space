@@ -12,7 +12,6 @@ import Metrics from "@/components/metrics";
 import Graph from "@/components/graph";
 import Toolbar from "@/components/toolbar";
 import Navigation from "@/components/navigation";
-import Image from "next/image";
 
 type CardType = {
   id: number;
