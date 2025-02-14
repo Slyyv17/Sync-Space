@@ -10,6 +10,7 @@ import {
   Trash } from "lucide-react";
 import Metrics from "@/components/metrics";
 import Graph from "@/components/graph";
+import Toolbar from "@/components/toolbar";
 import Navigation from "@/components/navigation";
 import Image from "next/image";
 
@@ -154,7 +155,7 @@ const Container = ({
             </button>
 
             {showOptions === container.id && (
-              <ul className="absolute top-8 right-0 w-52 h-fit bg-white text-greyClr text-lg font-medium shadow-lg rounded-md p-2">
+              <ul className="absolute top-8 left-0 w-52 h-fit bg-white text-greyClr text-lg font-medium shadow-lg rounded-md p-2">
                 <li className="flex justify-start items-center gap-4 p-1 hover:bg-gray-200 w-full">
                   <button className="flex justify-start items-center gap-4 w-full">
                     <PencilIcon size={16} />
@@ -319,14 +320,9 @@ export default function Home() {
       <main className="w-full h-fit border-black border flex flex-col items-center justify-between gap-2">
         {/* First section */}
         <section className="w-full flex justify-between items-center h-fit p-2 flex-col gap-2">
-          <div className="w-full h-fit p-2 flex justify-start items-center">
-            <Image
-              src="/sync-space logo.png"
-              alt="SyncSpace Logo"
-              height={50}
-              width={50}
-            >
-            </Image>
+          <div className="w-full h-fit p-2 flex justify-between items-center">
+
+            <Navigation />
           </div>
 
           {/* Charts */}
@@ -339,7 +335,7 @@ export default function Home() {
         {/* Main section */}
         <section className="w-full flex justify-between items-center h-fit p-2">
           <div className="w-full h-fit flex justify-between items-center gap-2">
-            <Navigation />
+            <Toolbar />
           </div>
 
             <button
