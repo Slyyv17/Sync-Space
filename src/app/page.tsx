@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { useState } from "react";
@@ -7,7 +8,8 @@ import {
   MoreVertical,
   Grip, Clock,
   PencilIcon, Users,
-  Trash } from "lucide-react";
+  Trash
+} from "lucide-react";
 import Metrics from "@/components/metrics";
 import Graph from "@/components/graph";
 import Toolbar from "@/components/toolbar";
@@ -43,9 +45,8 @@ const Card = ({ card, containerId, updateCardTitle, saveCardTitle }: {
   return (
     <div
       ref={drag as unknown as React.Ref<HTMLDivElement>}
-      className={`w-72 h-fit bg-mainClr border border-mainClr shadow-shadow shadow-sm rounded flex justify-between items-center flex-col p-2 ${
-        isDragging ? 'opacity-50' : 'opacity-100'
-      }`}
+      className={`w-72 h-fit bg-mainClr border border-mainClr shadow-shadow shadow-sm rounded flex justify-between items-center flex-col p-2 ${isDragging ? 'opacity-50' : 'opacity-100'
+        }`}
     >
       {card.editing ? (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -125,9 +126,8 @@ const Container = ({
   return (
     <div
       ref={drop as unknown as React.Ref<HTMLDivElement>}
-      className={`w-full h-fit bg-background border border-mainClr shadow-shadow shadow-sm rounded flex flex-col p-4 relative ${
-        isOver ? 'bg-opacity-50' : ''
-      }`}
+      className={`w-full h-fit bg-background border border-mainClr shadow-shadow shadow-sm rounded flex flex-col p-4 relative ${isOver ? 'bg-opacity-50' : ''
+        }`}
     >
       {container.editing ? (
         <div className="w-full flex flex-col items-center">
@@ -273,12 +273,12 @@ export default function Home() {
       prevContainers.map((container) =>
         container.id === containerId
           ? {
-              ...container,
-              cards: [
-                ...container.cards,
-                { id: Date.now(), title: "", editing: true },
-              ],
-            }
+            ...container,
+            cards: [
+              ...container.cards,
+              { id: Date.now(), title: "", editing: true },
+            ],
+          }
           : container
       )
     );
@@ -289,11 +289,11 @@ export default function Home() {
       prevContainers.map((container) =>
         container.id === containerId
           ? {
-              ...container,
-              cards: container.cards.map((card) =>
-                card.id === cardId ? { ...card, title: newTitle } : card
-              ),
-            }
+            ...container,
+            cards: container.cards.map((card) =>
+              card.id === cardId ? { ...card, title: newTitle } : card
+            ),
+          }
           : container
       )
     );
@@ -304,11 +304,11 @@ export default function Home() {
       prevContainers.map((container) =>
         container.id === containerId
           ? {
-              ...container,
-              cards: container.cards.map((card) =>
-                card.id === cardId ? { ...card, editing: false } : card
-              ),
-            }
+            ...container,
+            cards: container.cards.map((card) =>
+              card.id === cardId ? { ...card, editing: false } : card
+            ),
+          }
           : container
       )
     );
@@ -337,12 +337,12 @@ export default function Home() {
             <Toolbar />
           </div>
 
-            <button
-              onClick={addContainer}
-              className="bg-greyClr text-background px-4 py-2 rounded-lg shadow-md flex-shrink-0 whitespace-nowrap"
-            >
-              Add Container
-            </button>
+          <button
+            onClick={addContainer}
+            className="bg-greyClr text-background px-4 py-2 rounded-lg shadow-md flex-shrink-0 whitespace-nowrap"
+          >
+            Add Container
+          </button>
 
         </section>
 
