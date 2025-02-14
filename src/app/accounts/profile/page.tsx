@@ -1,20 +1,33 @@
 "use client";
 
 import Image from "next/image";
-import {useState} from "react";
+import { useState } from "react";
 
-export default function Accounts({src, alt}: {src?: string, alt?: string}) {
-    const [ImageSrc, setImageSrc] = useState(src || "/profile-pic.jpg")
+export default function Accounts({ src }: { src?: string }) {
+    const [imageSrc, setImageSrc] = useState(src || "/profile-pic.jpg");
+    const [error, setError] = useState(false); // Track image load errors
+
     return (
         <button className="w-fit h-fit border border-shadow shadow-sm rounded-full">
-            <Image
-                src={ImageSrc}
-                alt={alt || "Default placeholder image for account"}
-                height={50}
-                width={50}
-                onError={() => setImageSrc("/profile-pic.jpg")}
-                className="rounded"
-            />
+            {error ? (
+                // ✅ Use <img> instead of <image>
+                <img
+                    src={imageSrc}
+                    alt="User profile picture"
+                    height={50}
+                    width={50}
+                    className="rounded"
+                />
+            ) : (
+                <Image
+                    src={imageSrc}
+                    alt="User profile picture"
+                    height={50}
+                    width={50}
+                    onError={() => setError(true)} // Switch to <img> on error
+                    className="rounded"
+                />
+            )}
         </button>
-    )
+    );
 }
